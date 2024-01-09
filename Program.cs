@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TicketApp.Data;
 
@@ -13,7 +14,8 @@ namespace TicketApp
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<TicketappContext>(options =>
                 options.UseMySQL("Server=localhost;Database=mav;Uid=root;Pwd=root"));
-
+            
+            builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<TicketappContext>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,7 +26,7 @@ namespace TicketApp
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
