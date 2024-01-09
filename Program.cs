@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using TicketApp.Data;
+
 namespace TicketApp
 {
     public class Program
@@ -8,6 +11,8 @@ namespace TicketApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<TicketappContext>(options =>
+                options.UseMySQL("Server=localhost;Database=mav;Uid=root;Pwd=root"));
 
             var app = builder.Build();
 
