@@ -27,5 +27,5 @@ public partial class Line
 
     public virtual ICollection<Departuretime> Departuretimes { get; } = new List<Departuretime>();
 
-    public virtual ICollection<Order> Orders { get; } = new List<Order>();
+    public virtual ICollection<Ticket> Orders { get; } = new List<Ticket>();
 }

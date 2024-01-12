@@ -11,8 +11,8 @@ using TicketApp.Data;
 namespace TicketApp.Migrations
 {
     [DbContext(typeof(TicketappContext))]
-    [Migration("20240109174302_newMigration")]
-    partial class newMigration
+    [Migration("20240112114824_InitMigration")]
+    partial class InitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -220,23 +220,21 @@ namespace TicketApp.Migrations
 
             modelBuilder.Entity("TicketApp.Data.Departuretime", b =>
                 {
-                    b.Property<int>("LineId")
-                        .HasColumnType("int");
-
                     b.Property<int>("DepartureTimeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Departure")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime(6)");
 
-                    b.HasKey("LineId", "DepartureTimeId")
-                        .HasName("PRIMARY");
+                    b.Property<int>("LineId")
+                        .HasColumnType("int");
 
-                    b.HasIndex(new[] { "DepartureTimeId" }, "DepartureTimeId")
-                        .IsUnique();
+                    b.HasKey("DepartureTimeId");
 
-                    b.ToTable("departuretime", (string)null);
+                    b.HasIndex("LineId");
+
+                    b.ToTable("Departuretimes");
                 });
 
             modelBuilder.Entity("TicketApp.Data.Line", b =>
@@ -247,19 +245,17 @@ namespace TicketApp.Migrations
 
                     b.Property<string>("ArrivalPlace")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("DeparturePlace")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("Distance")
                         .HasColumnType("int");
 
                     b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
+                        .HasColumnType("time(6)");
 
                     b.Property<bool>("IsReservedSeated")
                         .HasColumnType("tinyint(1)");
@@ -276,69 +272,34 @@ namespace TicketApp.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.HasKey("LineId")
-                        .HasName("PRIMARY");
+                    b.HasKey("LineId");
 
-                    b.ToTable("line", (string)null);
+                    b.ToTable("Lines");
                 });
 
             modelBuilder.Entity("TicketApp.Data.Order", b =>
                 {
-                    b.Property<int>("LineId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("DepartureTimeId")
                         .HasColumnType("int");
 
-                    b.HasKey("LineId", "UserId")
-                        .HasName("PRIMARY");
-
-                    b.HasIndex(new[] { "DepartureTimeId" }, "DepartureTimeId_idx");
-
-                    b.HasIndex(new[] { "UserId" }, "UserId_idx");
-
-                    b.ToTable("order", (string)null);
-                });
-
-            modelBuilder.Entity("TicketApp.Data.User", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("LineId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Adress")
-                        .HasMaxLength(255)
+                    b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    b.HasKey("Id");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("tinyint(1)");
+                    b.HasIndex("DepartureTimeId");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    b.HasIndex("LineId");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    b.HasIndex("UserId");
 
-                    b.Property<string>("Pwd")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("UserId")
-                        .HasName("PRIMARY");
-
-                    b.ToTable("user", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -398,8 +359,7 @@ namespace TicketApp.Migrations
                         .WithMany("Departuretimes")
                         .HasForeignKey("LineId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("LineIdInDeparture");
+                        .IsRequired();
 
                     b.Navigation("Line");
                 });
@@ -409,24 +369,18 @@ namespace TicketApp.Migrations
                     b.HasOne("TicketApp.Data.Departuretime", "DepartureTime")
                         .WithMany("Orders")
                         .HasForeignKey("DepartureTimeId")
-                        .HasPrincipalKey("DepartureTimeId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("DepartureTimeId");
+                        .IsRequired();
 
                     b.HasOne("TicketApp.Data.Line", "Line")
                         .WithMany("Orders")
                         .HasForeignKey("LineId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("LineId");
+                        .IsRequired();
 
-                    b.HasOne("TicketApp.Data.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("UserId");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("DepartureTime");
 
@@ -444,11 +398,6 @@ namespace TicketApp.Migrations
                 {
                     b.Navigation("Departuretimes");
 
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("TicketApp.Data.User", b =>
-                {
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

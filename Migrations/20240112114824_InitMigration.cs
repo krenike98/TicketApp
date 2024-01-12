@@ -7,11 +7,14 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace TicketApp.Migrations
 {
     /// <inheritdoc />
-    public partial class newMigration : Migration
+    public partial class InitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -50,6 +53,28 @@ namespace TicketApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Lines",
+                columns: table => new
+                {
+                    LineId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    DeparturePlace = table.Column<string>(type: "longtext", nullable: false),
+                    ArrivalPlace = table.Column<string>(type: "longtext", nullable: false),
+                    Distance = table.Column<int>(type: "int", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time(6)", nullable: false),
+                    IsReservedSeated = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsSupplementTicketNeeded = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false),
+                    NumberOfCarriages = table.Column<int>(type: "int", nullable: true),
+                    NumberOfSeats = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lines", x => x.LineId);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -164,6 +189,59 @@ namespace TicketApp.Migrations
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Departuretimes",
+                columns: table => new
+                {
+                    DepartureTimeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    LineId = table.Column<int>(type: "int", nullable: false),
+                    Departure = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departuretimes", x => x.DepartureTimeId);
+                    table.ForeignKey(
+                        name: "FK_Departuretimes_Lines_LineId",
+                        column: x => x.LineId,
+                        principalTable: "Lines",
+                        principalColumn: "LineId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false),
+                    LineId = table.Column<int>(type: "int", nullable: false),
+                    DepartureTimeId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Orders_Departuretimes_DepartureTimeId",
+                        column: x => x.DepartureTimeId,
+                        principalTable: "Departuretimes",
+                        principalColumn: "DepartureTimeId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Lines_LineId",
+                        column: x => x.LineId,
+                        principalTable: "Lines",
+                        principalColumn: "LineId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -200,6 +278,26 @@ namespace TicketApp.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Departuretimes_LineId",
+                table: "Departuretimes",
+                column: "LineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_DepartureTimeId",
+                table: "Orders",
+                column: "DepartureTimeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_LineId",
+                table: "Orders",
+                column: "LineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -221,10 +319,19 @@ namespace TicketApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Departuretimes");
+
+            migrationBuilder.DropTable(
+                name: "Lines");
         }
     }
 }

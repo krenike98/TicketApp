@@ -13,5 +13,5 @@ public partial class Departuretime
 
     public virtual Line Line { get; set; } = null!;
 
-    public virtual ICollection<Order> Orders { get; } = new List<Order>();
+    public virtual ICollection<Ticket> Orders { get; } = new List<Ticket>();
 }

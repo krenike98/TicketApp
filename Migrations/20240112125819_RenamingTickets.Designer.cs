@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketApp.Data;
 
@@ -10,9 +11,11 @@ using TicketApp.Data;
 namespace TicketApp.Migrations
 {
     [DbContext(typeof(TicketappContext))]
-    partial class TicketappContextModelSnapshot : ModelSnapshot
+    [Migration("20240112125819_RenamingTickets")]
+    partial class RenamingTickets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
