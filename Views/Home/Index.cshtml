@@ -1,8 +1,57 @@
-﻿@{
+﻿@using Microsoft.EntityFrameworkCore;
+@using System.Security.Claims;
+@using TicketApp.Data;
+@model TicketApp.Models.SearchViewModel;
+@{
     ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h3>Keresés:</h3>
+<form asp-controller="Home" asp-action="ShowSearchResult" method="post">
+
+    <div class="form-group">
+        <label asp-for="LineSearchModel.DeparturePlace">Indulási hely:</label>
+        <input asp-for="LineSearchModel.DeparturePlace" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LineSearchModel.DepartureTime">Indulási idő:</label>
+        <input asp-for="LineSearchModel.DepartureTime" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LineSearchModel.ArrivalPlace">Érkezési hely:</label>
+        <input asp-for="LineSearchModel.ArrivalPlace" class="form-control" />
+    </div>
+
+    <div>
+        <input type="submit" value="Search">
+    </div>
+</form>
+
+<br />
+<div>
+    <h3>Rendeléseim:</h3>
+    @{
+        if (Model != null && Model.TicketappContext != null && Model.TicketappContext.Tickets != null && Model.TicketappContext.Tickets.Any())
+        {
+            var tickets = Model.TicketappContext.Tickets
+                .Include(t => t.DepartureTime)
+                .Include(t => t.Line)
+                .Where(e => e.User.Id.Equals(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+
+            foreach (var ticket in tickets)
+            {
+                <div>
+                    Rendelési azonosító: <a href="@Url.Action("ShowTicket", "Home",new { TicketId = ticket.TicketId })">@ticket.TicketId.ToString()</a>
+                </div>
+            }
+        }
+        else
+        {
+            <p>No tickets found.</p>
+        }
+    }
+
 </div>

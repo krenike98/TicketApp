@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +16,9 @@ public partial class TicketappContext : IdentityDbContext<IdentityUser>
     }
 
     public virtual DbSet<Departuretime> Departuretimes { get; set; }
-    public DbSet<IdentityRole> Roles { get; set; }
     public virtual DbSet<Line> Lines { get; set; }
 
-    public virtual DbSet<Ticket> Orders { get; set; }
+    public virtual DbSet<Ticket> Tickets { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,6 +30,10 @@ public partial class TicketappContext : IdentityDbContext<IdentityUser>
         
 
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Ticket>()
+            .HasOne(e => e.User)
+            .WithMany()
+            .HasForeignKey(e => e.UserId)
+            .IsRequired();
     }
-
 }

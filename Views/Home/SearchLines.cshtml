@@ -1,0 +1,58 @@
+﻿@using TicketApp.Data;
+@model List<Departuretime>
+@{
+    ViewData["Title"] = "Show Searchresults";
+    Layout = "_Layout";
+}
+
+<h1>Keresési eredmények:</h1>
+@if (Model != null && Model.Count > 0)
+{
+    <table id="departuresTable">
+        <thead>
+            <tr>
+                <th>Indulási idő</th>
+                <th>Érkezési idő</th>
+                <th>Indulási hely</th>
+                <th>Érkezési hely</th>
+                <th>Menetidő</th>
+                <th>Helyjegyköteles</th>
+                <th>Jegyvásárlás</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var departureTime in Model)
+            {
+                <tr>
+                    <td>@departureTime.Departure.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@departureTime.Departure.Add(departureTime.Line.Duration).ToString("HH:mm")</td>
+                    <td>@departureTime.Line.DeparturePlace</td>
+                    <td>@departureTime.Line.ArrivalPlace</td>
+                    <td>@departureTime.Line.Duration</td>
+                    <td>@if (departureTime.Line.IsReservedSeated)
+                        {
+                            <text>Igen</text>
+                        }
+                        else
+                        {
+                            <text>Nem</text>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("NewTicketWithUser", "Home",new { DepartureTimeId = departureTime.DepartureTimeId })">
+                            <button type="button">@departureTime.Line.Price.ToString("N0") Ft</button>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No results found.</p>
+}
+
+<a href="@Url.Action("Index", "Home")">
+    <button type="button">Vissza</button>
+</a>

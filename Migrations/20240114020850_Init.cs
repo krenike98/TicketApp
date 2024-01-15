@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace TicketApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigration : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -211,30 +211,35 @@ namespace TicketApp.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Tickets",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "varchar(255)", nullable: false),
+                    TicketId = table.Column<string>(type: "varchar(255)", nullable: false),
                     LineId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false),
                     DepartureTimeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: true)
+                    PassengerName = table.Column<string>(type: "longtext", nullable: false),
+                    PassengerAdress = table.Column<string>(type: "longtext", nullable: false),
+                    PassengerEmail = table.Column<string>(type: "longtext", nullable: false),
+                    PassengerPhoneNumber = table.Column<string>(type: "longtext", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_Tickets", x => x.TicketId);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UserId",
+                        name: "FK_Tickets_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_Departuretimes_DepartureTimeId",
+                        name: "FK_Tickets_Departuretimes_DepartureTimeId",
                         column: x => x.DepartureTimeId,
                         principalTable: "Departuretimes",
                         principalColumn: "DepartureTimeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_Lines_LineId",
+                        name: "FK_Tickets_Lines_LineId",
                         column: x => x.LineId,
                         principalTable: "Lines",
                         principalColumn: "LineId",
@@ -285,18 +290,18 @@ namespace TicketApp.Migrations
                 column: "LineId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_DepartureTimeId",
-                table: "Orders",
+                name: "IX_Tickets_DepartureTimeId",
+                table: "Tickets",
                 column: "DepartureTimeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_LineId",
-                table: "Orders",
+                name: "IX_Tickets_LineId",
+                table: "Tickets",
                 column: "LineId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UserId",
-                table: "Orders",
+                name: "IX_Tickets_UserId",
+                table: "Tickets",
                 column: "UserId");
         }
 
@@ -319,7 +324,7 @@ namespace TicketApp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
