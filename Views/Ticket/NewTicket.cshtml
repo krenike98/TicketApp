@@ -1,0 +1,34 @@
+﻿@using TicketApp.Data;
+@model Ticket
+@{
+    ViewData["Title"] = "New Ticket Page";
+    Layout = "_Layout";
+}
+<h2>Jegyvásárlás</h2>
+<form method="post" asp-action="CreateTicket" asp-controller="Ticket">
+    <div class="form-group">
+        <label for="PassengerName">Utas neve:</label>
+        <input type="text" name="PassengerName" value="@Model.PassengerName" />
+    </div>
+
+    <div class="form-group">
+        <label for="PassengerAdress">Utas címe:</label>
+        <input type="text" name="PassengerAdress" value="@Model.PassengerAdress" />
+    </div>
+
+    <div class="form-group">
+        <label for="PassengerEmail">Utas email címe:</label>
+        <input type="text" name="PassengerEmail" value="@Model.PassengerEmail" />
+    </div>
+
+    <div class="form-group">
+        <label for="PassengerPhoneNumber">Utas telefonszáma:</label>
+        <input type="text" name="PassengerPhoneNumber" value="@Model.PassengerPhoneNumber" />
+    </div>
+
+    <input type="hidden" name="DepartureTimeId" value="@Model.DepartureTimeId" />
+    <input type="hidden" name="TicketId" value="@Model.TicketId" />
+    <input type="hidden" name="LineId" value="@Model.LineId" />
+
+    <input type="submit" value="OK" />
+</form>

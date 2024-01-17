@@ -11,9 +11,13 @@ namespace TicketApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private TicketappContext _ticketappcontext = new();
+        private TicketappContext _ticketappcontext;
 
-
+        public HomeController(TicketappContext ticketappContext, ILogger<HomeController> logger)
+        {
+            _logger = logger;
+            _ticketappcontext = ticketappContext;
+        }
         public IActionResult Index()
         {
             SearchViewModel searchViewModel = new(_ticketappcontext);
@@ -49,11 +53,6 @@ namespace TicketApp.Controllers
             return View(newSearchViewModel);
         }
 
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
 
         public IActionResult Privacy()
         {
