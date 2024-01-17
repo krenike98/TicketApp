@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TicketApp.Data;
 
@@ -35,7 +36,6 @@ namespace TicketApp.Controllers
                 DepartureTime = deptime,
                 DepartureTimeId = departureTimeId,
                 LineId = deptime.LineId,
-                PassengerName = User.Identity.Name
             };
             return View("NewTicket", newTicket);
         }
@@ -57,6 +57,24 @@ namespace TicketApp.Controllers
                 ModelState.AddModelError("", "Sikertelen jegyfelvétel!" + ex.Message);
             }
             return View("NewTicket", newTicket);
+        }
+
+        public IActionResult ShowTicket(string TicketId)
+        {
+            Ticket ticket;
+            try
+            {
+                ticket = _ticketappcontext.Tickets
+                    .Include(t => t.DepartureTime)
+                    .Include(t => t.Line)
+                    .Where(d => d.TicketId.Equals(TicketId)).First();
+                return View("ShowTicket", ticket);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Sikertelen jegyfelvétel!" + ex.Message);
+            }
+            return View();
         }
     }
 }

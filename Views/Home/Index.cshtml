@@ -12,6 +12,18 @@
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
 <h3>Keresés:</h3>
 <form asp-controller="Home" asp-action="ShowSearchResult" method="post">
 
@@ -49,7 +61,10 @@
             foreach (var ticket in tickets)
             {
                 <div>
-                    Rendelési azonosító: <a href="@Url.Action("ShowTicket", "Ticket",new { TicketId = ticket.TicketId })">@ticket.TicketId.ToString()</a>
+                    Rendelési azonosító: 
+                    <a asp-controller="Ticket" asp-action="ShowTicket" asp-route-TicketId="@ticket.TicketId">
+                        @ticket.TicketId.ToString()
+                    </a>
                 </div>
             }
         }

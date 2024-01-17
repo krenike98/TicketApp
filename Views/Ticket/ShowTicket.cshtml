@@ -1,0 +1,36 @@
+﻿@using TicketApp.Data;
+@model Ticket
+@{
+    ViewData["Title"] = "Show Ticket";
+    Layout = "_Layout";
+}
+
+<h2>Jegy részletei: </h2>
+<div>
+    <p><b>Azonosító:</b> @Model.TicketId</p>
+    <p><b>Indulás: </b><span>@Model.Line.DeparturePlace </span> @Model.DepartureTime.Departure.ToString("yyyy-MM-dd HH:mm")</p>
+    <p><b>Érkezés: </b> <span>@Model.Line.ArrivalPlace </span>@Model.DepartureTime.Departure.Add(Model.Line.Duration).ToString("yyyy-MM-dd HH:mm")</p>
+    <p><b>Időtartam: </b> @Model.Line.Duration.ToString("c")</p>
+    <p><b>Ár: </b> @Model.Line.Price</p>
+    <p><b>Helyjegyköteles: </b> @if (Model.Line.IsReservedSeated)
+        {
+            <text>Igen</text>
+        } </p>
+    <p><b>Utas neve: </b> @Model.PassengerName</p>
+    <p><b>Utas címe:</b> @Model.PassengerAdress</p>
+    <p><b>Utas email címe:</b> @Model.PassengerEmail</p>
+    <p><b>Utas Telefonszáma:</b> @Model.PassengerAdress</p>
+</div>
+
+@if (DateTime.Now > Model.DepartureTime.Departure)
+{
+    <div>
+        <p>A jegy érvénytelen.</p>
+    </div>
+}
+else
+{
+    <div>
+        <p>A jegy érvényes.</p>
+    </div>
+}

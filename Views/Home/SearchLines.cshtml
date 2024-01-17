@@ -39,7 +39,7 @@
                         }
                     </td>
                     <td>
-                        <a href="@Url.Action("NewTicket", "Ticket",new { DepartureTimeId = departureTime.DepartureTimeId })">
+                        <a asp-action="NewTicket" asp-controller="Ticket" asp-route-DepartureTimeId="@departureTime.DepartureTimeId">
                             <button type="button">@departureTime.Line.Price.ToString("N0") Ft</button>
                         </a>
                     </td>
